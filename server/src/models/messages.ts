@@ -1,6 +1,6 @@
 import { Schema, model } from "mongoose";
 
-interface MessageModel {
+interface IMessageModel {
   _id: Schema.Types.ObjectId;
   _senderID: Schema.Types.ObjectId;
   _groupID: Schema.Types.ObjectId;
@@ -9,7 +9,7 @@ interface MessageModel {
   editAt: Date | null;
 }
 
-const messageSchema = new Schema<MessageModel>({
+const messageSchema = new Schema<IMessageModel>({
   _id: { type: Schema.Types.ObjectId, required: true },
   _senderID: { Types: Schema.Types.ObjectId, required: true, ref: "User" },
   _groupID: { Types: Schema.Types.ObjectId, required: true, ref: "Group" },
@@ -18,6 +18,6 @@ const messageSchema = new Schema<MessageModel>({
   editAt: Date,
 });
 
-const Message = model<MessageModel>("Message", messageSchema);
+const Message = model<IMessageModel>("Message", messageSchema);
 
 export default Message;

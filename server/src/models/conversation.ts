@@ -1,8 +1,8 @@
 import { Schema, model } from "mongoose";
 
-interface GroupModel {
+interface IConversationModel {
   _id: Schema.Types.ObjectId;
-  directMessage: boolean;
+  group: boolean;
   _ownerID: Schema.Types.ObjectId | null;
   title: string;
   groupPicture: string;
@@ -10,9 +10,9 @@ interface GroupModel {
   createdAt: Date;
 }
 
-const groupSchema = new Schema<GroupModel>({
+const conversationSchema = new Schema<IConversationModel>({
   _id: { type: Schema.Types.ObjectId, required: true },
-  directMessage: { type: Boolean, required: true },
+  group: { type: Boolean },
   _ownerID: { type: Schema.Types.ObjectId, ref: "User" },
   title: { type: String, required: true },
   groupPicture: String,
@@ -20,6 +20,9 @@ const groupSchema = new Schema<GroupModel>({
   createdAt: { type: Date, required: true },
 });
 
-const Group = model<GroupModel>("Group", groupSchema);
+const Conversation = model<IConversationModel>(
+  "Conversation",
+  conversationSchema
+);
 
-export default Group;
+export default Conversation;

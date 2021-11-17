@@ -1,7 +1,7 @@
-import express, { Response, Request } from "express";
+import express, { Router, Response, Request } from "express";
 import passport from "../middleware/passport";
 
-const router = express.Router();
+const router: Router = express.Router();
 
 router.get(
   "/api/oauth/google",
@@ -11,16 +11,16 @@ router.get(
 router.get(
   "/api/sessions/oauth/google",
   passport.authenticate("google", {
-    failureRedirect: "http://localhost:3000",
+    failureRedirect: "http://localhost:3000/start",
     session: true,
   }),
   (req: Request, res: Response) => {
-    res.redirect("http://localhost:3000/home");
+    res.redirect("http://localhost:3000");
   }
 );
-router.get("/api/getUser", (req: Request, res: Response) => {
+router.get("/api/isAuth", (req: Request, res: Response) => {
   try {
-    res.status(200).json(req.user);
+    res.status(200).send(req.isAuthenticated());
   } catch (err) {
     throw err;
   }
