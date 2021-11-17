@@ -14,12 +14,15 @@
 
   }
   &__btn-wrapper{
+    pointer-events: none;
     display:flex;
     justify-content: center;
     margin-bottom: 3rem;
 
   }
   &__oauth{
+    pointer-events: all;
+    cursor: pointer;
     width: 50%;
   }
 }

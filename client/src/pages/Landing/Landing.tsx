@@ -32,12 +32,16 @@ const LandingPage: React.FC = () => {
           <Scroll html>
             <main className="landing">
               <h1 className="landing__intro">Welcome!</h1>
-              <a
-                href="http://localhost:8080/api/oauth/google"
-                className="landing__btn-wrapper"
-              >
-                <img src={googleOAuthBtn} className="landing__oauth" />
-              </a>
+              <div className="landing__btn-wrapper">
+                <img
+                  src={googleOAuthBtn}
+                  className="landing__oauth"
+                  onClick={() => {
+                    window.location.href =
+                      "http://localhost:8080/api/oauth/google";
+                  }}
+                />
+              </div>
             </main>
           </Scroll>
         </ScrollControls>
