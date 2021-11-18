@@ -5,9 +5,9 @@ import mongoose from "mongoose";
 import passport from "./middleware/passport";
 import cors from "cors";
 import oauth from "./routes/oauthRoute";
-import socket from "socket.io";
 import { createServer } from "http";
 import { Server } from "socket.io";
+import socket from "./socket";
 
 dotenv.config();
 const PORT: number = Number(process.env.PORT as string) || 8080;
@@ -47,4 +47,5 @@ app.use(oauth);
 //Server ports
 httpServer.listen(PORT, () => {
   console.log(`listening on port: ${PORT}`);
+  socket({ io });
 });

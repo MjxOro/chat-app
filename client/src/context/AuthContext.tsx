@@ -1,9 +1,9 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useEffect, useState, useContext } from "react";
 import axios from "axios";
 import { AxiosResponse } from "axios";
 
-export const AuthContext = createContext<any>(null);
-const AuthProvider = (props: any) => {
+const AuthContext = createContext<any>(null);
+export const AuthProvider = (props: any) => {
   const [authState, setAuthState] = useState<boolean>();
   const getAuth = async () => {
     try {
@@ -23,4 +23,7 @@ const AuthProvider = (props: any) => {
     </AuthContext.Provider>
   );
 };
-export default AuthProvider;
+
+const useAuthenticate = () => useContext(AuthContext);
+
+export default useAuthenticate;

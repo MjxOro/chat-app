@@ -1,16 +1,16 @@
-import React, { useContext } from "react";
+import React from "react";
 import { Routes, Route } from "react-router-dom";
 import "./App.scss";
 import ProtectedRoute from "./Components/ProtectedRoute";
 import LandingPage from "./Pages/Landing/Landing";
-import AuthProvider, { AuthContext } from "./Hooks/AuthContext";
+import useAuthenticate from "./context/AuthContext";
 
 const Poggers = () => {
   return <h1> LOGGED IN </h1>;
 };
 
 const App: React.FC = () => {
-  const isAuth = useContext(AuthContext);
+  const isAuth = useAuthenticate();
   return (
     <>
       {isAuth !== (null || undefined) && (
