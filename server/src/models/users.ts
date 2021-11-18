@@ -1,8 +1,7 @@
 import mongoose, { Schema, model } from "mongoose";
 
 export interface IUserModel extends mongoose.Document {
-  googleId?: string;
-  twitterId?: string;
+  googleId?: string | null;
   email: string;
   username?: string;
   picture?: string;
@@ -14,9 +13,8 @@ export interface IUserModel extends mongoose.Document {
 
 const userSchema = new Schema<IUserModel>({
   googleId: { type: String, unique: true },
-  twitterId: { type: String, unique: true },
   email: { type: String, required: true, unique: true },
-  username: { type: String, unique: true },
+  username: { type: String },
   picture: String,
   groups: [{ type: Schema.Types.ObjectId, ref: "Group" }],
   banned: { type: Boolean, default: false },

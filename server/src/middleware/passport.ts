@@ -11,6 +11,7 @@ passport.serializeUser((user: { _id?: any }, cb: any) => {
 passport.deserializeUser((id: string, cb: any) => {
   User.findById(id, (error: Error, data: IUserModel) => {
     if (error) {
+      console.log("HERE");
       return cb(error, null);
     }
     return cb(null, data);
@@ -50,19 +51,19 @@ passport.use(
         { email: _json.email },
         async (err: Error, data: IGoogleUser) => {
           if (err) {
-            console.log(err);
-            return cb(err, null);
+            cb(err);
           }
           if (!data) {
             const newUser = new User({
               googleId: _json.sub,
+              username: _json.given_name,
               email: _json.email,
               picture: _json.picture,
             });
             await newUser.save();
-            cb(null, newUser);
+            return cb(null, newUser);
           }
-          cb(null, data);
+          return cb(null, data);
         }
       );
     }

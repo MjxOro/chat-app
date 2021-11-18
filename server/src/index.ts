@@ -4,7 +4,8 @@ import session from "express-session";
 import mongoose from "mongoose";
 import passport from "./middleware/passport";
 import cors from "cors";
-import oauth from "./routes/oauthRoute";
+import oauthRoute from "./routes/oauthRoute";
+import userRoute from "./routes/userRoute";
 import { createServer } from "http";
 import { Server } from "socket.io";
 import socket from "./socket";
@@ -35,17 +36,18 @@ app.use(
     cookie: {
       httpOnly: true,
       secure: false,
-      maxAge: 1000 * 60 * 60 * 24, //24 hours
+      maxAge: 1000 * 60 * 60, //1 hour
     },
   })
 );
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use(oauth);
+app.use(oauthRoute);
+app.use(userRoute);
 
 //Server ports
-httpServer.listen(PORT, () => {
+httpServer.listen(PORT, async () => {
   console.log(`listening on port: ${PORT}`);
   socket({ io });
 });

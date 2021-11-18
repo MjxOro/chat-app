@@ -15,13 +15,14 @@ router.get(
     session: true,
   }),
   (req: Request, res: Response) => {
-    res.redirect("http://localhost:3000");
+    return res.redirect("http://localhost:3000");
   }
 );
 router.get("/api/isAuth", (req: Request, res: Response) => {
   try {
-    res.status(200).send(req.isAuthenticated());
+    return res.status(200).send(req.isAuthenticated());
   } catch (err) {
+    console.log(err);
     throw err;
   }
 });
