@@ -1,13 +1,12 @@
-import { Navigate } from "react-router-dom";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
 
-const ProtectedRoute = ({
-  children,
-  isAuth,
-}: {
-  children: JSX.Element;
-  isAuth: boolean;
-}) => {
-  return isAuth ? children : <Navigate to="/start" />;
+const ProtectedRoute = ({ isAuth }: { isAuth: object }) => {
+  const location = useLocation();
+  return isAuth ? (
+    <Outlet />
+  ) : (
+    <Navigate to="/start" state={{ from: location }} />
+  );
 };
 
 export default ProtectedRoute;

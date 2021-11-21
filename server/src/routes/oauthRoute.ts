@@ -20,7 +20,10 @@ router.get(
 );
 router.get("/api/isAuth", (req: Request, res: Response) => {
   try {
-    return res.status(200).send(req.isAuthenticated());
+    if (!req.isAuthenticated()) {
+      return res.send(null);
+    }
+    return res.status(200).json(req.user);
   } catch (err) {
     console.log(err);
     throw err;

@@ -4,7 +4,7 @@ import { AxiosResponse } from "axios";
 
 const AuthContext = createContext<any>(null);
 export const AuthProvider = (props: any) => {
-  const [authState, setAuthState] = useState<boolean>();
+  const [authState, setAuthState] = useState<any>(null);
   const getAuth = async () => {
     try {
       const res: AxiosResponse = await axios.get("/api/isAuth");

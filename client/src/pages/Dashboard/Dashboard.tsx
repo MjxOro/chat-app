@@ -1,11 +1,12 @@
 import React, { useRef } from "react";
 import Chat from "./Chat";
-import useUser from "../../context/UserContext";
 import useSockets from "../../context/SocketContext";
+import useAuthenticate from "../../context/AuthContext";
 
 const Dashboard: React.FC = () => {
-  const currentUser = useUser();
+  const currentUser = useAuthenticate();
   const { socket } = useSockets();
+  console.log(currentUser);
   return (
     <>
       {currentUser && (
