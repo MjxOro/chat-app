@@ -2,6 +2,7 @@ import React, { useRef } from "react";
 import Chat from "./Chat";
 import useSockets from "../../context/SocketContext";
 import useAuthenticate from "../../context/AuthContext";
+import Conversation from "./conversation";
 
 const Dashboard: React.FC = () => {
   const currentUser = useAuthenticate();
@@ -11,6 +12,7 @@ const Dashboard: React.FC = () => {
     <>
       {currentUser && (
         <div>
+          <Conversation currentUser={currentUser} />
           <Chat />
           <div>{socket.id}</div>
           <div>

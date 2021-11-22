@@ -1,23 +1,21 @@
 import { Schema, model } from "mongoose";
 
-interface IConversationModel {
-  _id: Schema.Types.ObjectId;
-  group: boolean;
+export interface IConversationModel {
+  _id: string;
   _ownerID: Schema.Types.ObjectId | null;
   title: string;
-  groupPicture: string;
+  groupPicture?: string;
   members: Array<Schema.Types.ObjectId>;
-  createdAt: Date;
+  createdAt?: number;
 }
 
 const conversationSchema = new Schema<IConversationModel>({
-  _id: { type: Schema.Types.ObjectId, required: true },
-  group: { type: Boolean },
+  _id: { type: String, required: true },
   _ownerID: { type: Schema.Types.ObjectId, ref: "User" },
   title: { type: String, required: true },
-  groupPicture: String,
+  groupPicture: { type: String, default: "" },
   members: [{ type: Schema.Types.ObjectId, ref: "User", required: true }],
-  createdAt: { type: Date, required: true },
+  createdAt: { type: Number, default: +new Date() },
 });
 
 const Conversation = model<IConversationModel>(
