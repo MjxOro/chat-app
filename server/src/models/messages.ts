@@ -1,8 +1,9 @@
 import mongoose, { Schema, model, ObjectId } from "mongoose";
 
 export interface IMessageModel extends mongoose.Document {
-  _senderID: ObjectId;
-  _groupID: ObjectId;
+  _senderId: ObjectId;
+  _groupId: ObjectId;
+  owner: string;
   content: string;
   createdAt: number;
   editAt?: Number;
@@ -10,8 +11,9 @@ export interface IMessageModel extends mongoose.Document {
 }
 
 const messageSchema = new Schema<IMessageModel>({
-  _senderID: { type: Schema.Types.ObjectId, ref: "User", required: true },
-  _groupID: { type: Schema.Types.ObjectId, ref: "Room", required: true },
+  _senderId: { type: Schema.Types.ObjectId, ref: "User", required: true },
+  _groupId: { type: Schema.Types.ObjectId, ref: "Room", required: true },
+  owner: { type: String, ref: "User", required: true },
   content: { type: String, required: true },
   createdAt: { type: Number, default: +new Date() },
   editAt: Number,

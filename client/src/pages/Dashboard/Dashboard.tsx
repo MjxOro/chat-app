@@ -1,19 +1,18 @@
-import React, { useRef, useState, useEffect } from "react";
+import React from "react";
 import Chat from "./Chat";
-import useSockets from "../../context/SocketContext";
 import useAuthenticate from "../../context/AuthContext";
 import Rooms from "./Rooms";
-import axios from "axios";
 
 const Dashboard: React.FC = () => {
-  const currentUser = useAuthenticate();
+  const { isAuth: currentUser } = useAuthenticate();
+  console.log(currentUser);
 
   return (
     <>
       {currentUser && (
         <div>
           <Rooms currentUser={currentUser} />
-          <Chat />
+          <Chat currentUser={currentUser} />
         </div>
       )}
     </>

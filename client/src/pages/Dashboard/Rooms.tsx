@@ -11,7 +11,7 @@ const NewRoomModal: React.FC = () => {
 };
 
 const Rooms = ({ currentUser }: { currentUser: object }) => {
-  const { socket, roomId, rooms } = useSockets();
+  const { socket, currentRoomId, rooms } = useSockets();
   const newRoomRef: any = useRef();
   console.log(rooms); //should probably show array of objects
   const handleCreateRoom = (e: any) => {
@@ -26,7 +26,7 @@ const Rooms = ({ currentUser }: { currentUser: object }) => {
     newRoomRef.current.value = null;
   };
   const handleJoinRoom = async () => {
-    socket.emit(EVENTS.CLIENT.JOINING_ROOM, { roomId, currentUser });
+    socket.emit(EVENTS.CLIENT.JOINING_ROOM, { currentRoomId, currentUser });
   };
 
   return (

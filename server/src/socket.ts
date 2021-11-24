@@ -26,7 +26,7 @@ const socket = ({ io }: { io: Server }) => {
 
     //Create chat room
     socket.on(EVENTS.CLIENT.CREATE_ROOM, async ({ roomName, currentUser }) => {
-      const roomId = new mongoose.Types.ObjectId();
+      const roomId = String(new mongoose.Types.ObjectId());
       const newRoom = new Room({
         _id: roomId,
         _ownerID: currentUser._id,
@@ -36,14 +36,13 @@ const socket = ({ io }: { io: Server }) => {
       });
       await newRoom.save();
 
-      socket.join(String(roomId));
-
       //Grab all chat rooms
       const rooms = await Room.find({});
 
-      socket.broadcast.emit(EVENTS.SERVER.ROOMS, rooms);
-      socket.emit(EVENTS.SERVER.ROOMS, rooms);
+      socket.join(roomId);
+      socket.emit(EVENTS.SERVER.ROOMS, { rooms, roomId });
       console.log("DATA SENT");
+      console.log(roomId);
     });
 
     // Handle User joing chat room
@@ -57,20 +56,32 @@ const socket = ({ io }: { io: Server }) => {
           },
         }
       );
-      socket.join(String(roomId));
-      socket.emit(EVENTS.SERVER.JOINED_ROOM, roomId);
+      socket.join(roomId);
+      const getRoomMessage = await Message.find({ _groupId: roomId });
+      getRoomMessage.sort((a, b) => a.createdAt - b.createdAt);
+      console.log(getRoomMessage);
+      socket.emit(EVENTS.SERVER.JOINED_ROOM, { roomId, getRoomMessage });
     });
+
     //Handle message sent to a room
     socket.on(
       EVENTS.CLIENT.SEND_ROOM_MESSAGE,
-      async ({ roomId, message, currentUser }) => {
+      async ({ currentRoomId, sentMessage, currentUser }) => {
+        console.log("roomID", currentRoomId);
+        console.log("User", currentUser);
         const newMessage = new Message({
-          _senderID: currentUser._id,
-          _groupID: roomId,
-          content: message,
+          _senderId: currentUser._id,
+          _groupId: currentRoomId,
+          owner: currentUser.username,
+          content: sentMessage,
         });
         await newMessage.save();
-        socket.to(String(roomId)).emit(EVENTS.SERVER.ROOM_MESSAGE);
+        const getRoomMessage = await Message.find({
+          _groupId: currentRoomId,
+        });
+        getRoomMessage.sort((a, b) => a.createdAt - b.createdAt);
+
+        socket.emit(EVENTS.SERVER.ROOM_MESSAGE, { getRoomMessage });
       }
     );
   });
