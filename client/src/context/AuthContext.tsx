@@ -2,13 +2,15 @@ import { createContext, useEffect, useState, useContext } from "react";
 import axios from "axios";
 import { AxiosResponse } from "axios";
 
-const AuthContext = createContext<any>(null);
+const AuthContext = createContext<any>({});
 export const AuthProvider = (props: any) => {
-  const [authState, setAuthState] = useState<any>(null);
+  const [isAuth, setIsAuth] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const getAuth = async () => {
     try {
       const res: AxiosResponse = await axios.get("/api/isAuth");
-      setAuthState(res.data);
+      setIsAuth(res.data);
+      setIsLoading(false);
     } catch (err) {
       console.log(err);
     }
@@ -16,9 +18,8 @@ export const AuthProvider = (props: any) => {
   useEffect(() => {
     getAuth();
   }, []);
-  console.log(authState);
   return (
-    <AuthContext.Provider value={authState}>
+    <AuthContext.Provider value={{ isAuth, isLoading }}>
       {props.children}
     </AuthContext.Provider>
   );
