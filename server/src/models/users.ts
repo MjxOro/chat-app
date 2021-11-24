@@ -1,14 +1,13 @@
-import mongoose, { Schema, model } from "mongoose";
+import mongoose, { Schema, model, ObjectId } from "mongoose";
 
 export interface IUserModel extends mongoose.Document {
-  googleId?: string | null;
+  googleId?: string;
   email: string;
   username?: string;
   picture?: string;
-  groups?: Array<Schema.Types.ObjectId | null>;
   banned: boolean;
   createdAt: number;
-  _id: string;
+  _id: ObjectId;
 }
 
 const userSchema = new Schema<IUserModel>({
@@ -16,9 +15,10 @@ const userSchema = new Schema<IUserModel>({
   email: { type: String, required: true, unique: true },
   username: { type: String },
   picture: String,
-  groups: [{ type: Schema.Types.ObjectId, ref: "Group" }],
   banned: { type: Boolean, default: false },
   createdAt: { type: Number, default: +new Date() },
 });
 
-export const User = model<IUserModel>("User", userSchema);
+const User = model<IUserModel>("User", userSchema);
+
+export default User;

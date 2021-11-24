@@ -1,5 +1,5 @@
 import passport from "passport";
-import { User, IUserModel } from "../models/users";
+import User, { IUserModel } from "../models/users";
 import dotenv from "dotenv";
 dotenv.config();
 const GoogleStrategy = require("passport-google-oauth20").Strategy;

@@ -11,7 +11,7 @@ router.get(
 router.get(
   "/api/sessions/oauth/google",
   passport.authenticate("google", {
-    failureRedirect: "http://localhost:3000/start",
+    failureRedirect: "http://localhost:3000",
     session: true,
   }),
   (req: Request, res: Response) => {
@@ -21,7 +21,8 @@ router.get(
 router.get("/api/isAuth", (req: Request, res: Response) => {
   try {
     if (!req.isAuthenticated()) {
-      return res.send(null);
+      //return res.status(400).send(null);
+      return res.json({});
     }
     return res.status(200).json(req.user);
   } catch (err) {

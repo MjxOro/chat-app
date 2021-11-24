@@ -5,6 +5,7 @@ import mongoose from "mongoose";
 import passport from "./middleware/passport";
 import cors from "cors";
 import oauthRoute from "./routes/oauthRoute";
+import roomRoutes from "./routes/roomRoutes";
 import userRoute from "./routes/userRoute";
 import { createServer } from "http";
 import { Server } from "socket.io";
@@ -45,6 +46,7 @@ app.use(passport.session());
 
 app.use(oauthRoute);
 app.use(userRoute);
+app.use(roomRoutes);
 
 //Server ports
 httpServer.listen(PORT, async () => {
