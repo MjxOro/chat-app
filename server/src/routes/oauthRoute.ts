@@ -1,7 +1,7 @@
-import express, { Response, Request } from "express";
+import express, { Router, Response, Request } from "express";
 import passport from "../middleware/passport";
 
-const router = express.Router();
+const router: Router = express.Router();
 
 router.get(
   "/api/oauth/google",
@@ -15,13 +15,18 @@ router.get(
     session: true,
   }),
   (req: Request, res: Response) => {
-    res.redirect("http://localhost:3000/home");
+    return res.redirect("http://localhost:3000");
   }
 );
-router.get("/api/getUser", (req: Request, res: Response) => {
+router.get("/api/isAuth", (req: Request, res: Response) => {
   try {
-    res.status(200).json(req.user);
+    if (!req.isAuthenticated()) {
+      //return res.status(400).send(null);
+      return res.send(null);
+    }
+    return res.status(200).json(req.user);
   } catch (err) {
+    console.log(err);
     throw err;
   }
 });
