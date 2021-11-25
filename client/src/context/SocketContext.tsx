@@ -17,7 +17,7 @@ const SocketContext = createContext<ISocketContext>({
   setMessages: () => false,
 });
 export const SocketsProvider = (props: any) => {
-  const [currentRoomId, setCurrentRoomId] = useState<string>("");
+  const [currentRoomId, setCurrentRoomId] = useState<any>("");
   const [messages, setMessages] = useState<any[]>([]);
   const [rooms, setRooms] = useState<any[]>([]);
   const getRooms = async () => {
@@ -33,10 +33,12 @@ export const SocketsProvider = (props: any) => {
     });
     socket.on(EVENTS.SERVER.JOINED_ROOM, ({ roomId, getRoomMessage }) => {
       console.log(roomId);
+      console.log(getRoomMessage);
       setCurrentRoomId(roomId);
       setMessages(getRoomMessage);
     });
     socket.on(EVENTS.SERVER.ROOM_MESSAGE, ({ getRoomMessage }) => {
+      console.log("I SENT");
       setMessages(getRoomMessage);
     });
   }, []);

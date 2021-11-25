@@ -12,6 +12,7 @@ const Chat = ({ currentUser }: { currentUser: object }) => {
       //If message empty, dont send
       return;
     }
+    console.log(currentRoomId);
     socket.emit(EVENTS.CLIENT.SEND_ROOM_MESSAGE, {
       sentMessage,
       currentUser,
@@ -24,7 +25,7 @@ const Chat = ({ currentUser }: { currentUser: object }) => {
     <>
       {messages.map((elem) => {
         return (
-          <div>
+          <div key={elem._id}>
             <div>{elem.content}</div>
             <div>{elem.owner}</div>
           </div>
