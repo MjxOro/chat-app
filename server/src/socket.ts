@@ -32,7 +32,6 @@ const socket = ({ io }: { io: Server }) => {
         _ownerID: currentUser._id,
         owner: currentUser.username,
         title: roomName,
-        members: [currentUser._id],
       });
       await newRoom.save();
 
@@ -46,29 +45,25 @@ const socket = ({ io }: { io: Server }) => {
     });
 
     // Handle User joing chat room
-    socket.on(EVENTS.CLIENT.JOINING_ROOM, async ({ currentUser, roomId }) => {
-      //add user to Room
-      await Room.updateOne(
-        { _id: roomId },
-        {
-          $push: {
-            members: currentUser._id,
-          },
-        }
-      );
-      socket.join(roomId);
-      const getRoomMessage = await Message.find({ _groupId: roomId });
-      getRoomMessage.sort((a, b) => a.createdAt - b.createdAt);
-      console.log(getRoomMessage);
-      socket.emit(EVENTS.SERVER.JOINED_ROOM, { roomId, getRoomMessage });
-    });
+    socket.on(
+      EVENTS.CLIENT.JOINING_ROOM,
+      async ({ currentUser, clickedRoom }) => {
+        //add user to Room
+
+        console.log(clickedRoom);
+        socket.join(clickedRoom);
+        const getRoomMessage = await Message.find({ _groupId: clickedRoom });
+        getRoomMessage.sort((a, b) => a.createdAt - b.createdAt);
+        const roomId = clickedRoom;
+        socket.emit(EVENTS.SERVER.JOINED_ROOM, { roomId, getRoomMessage });
+      }
+    );
 
     //Handle message sent to a room
     socket.on(
       EVENTS.CLIENT.SEND_ROOM_MESSAGE,
       async ({ currentRoomId, sentMessage, currentUser }) => {
-        console.log("roomID", currentRoomId);
-        console.log("User", currentUser);
+        socket.join(currentRoomId);
         const newMessage = new Message({
           _senderId: currentUser._id,
           _groupId: currentRoomId,
@@ -81,7 +76,12 @@ const socket = ({ io }: { io: Server }) => {
         });
         getRoomMessage.sort((a, b) => a.createdAt - b.createdAt);
 
+        //SEEN both sender and reciever
+        //socket.in().emit() did not work
         socket.emit(EVENTS.SERVER.ROOM_MESSAGE, { getRoomMessage });
+        socket
+          .to(currentRoomId)
+          .emit(EVENTS.SERVER.ROOM_MESSAGE, { getRoomMessage });
       }
     );
   });

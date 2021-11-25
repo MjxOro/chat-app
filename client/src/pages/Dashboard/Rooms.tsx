@@ -4,7 +4,6 @@ import EVENTS from "../../config/socketEvents";
 import Avatar from "@mui/material/Avatar";
 import TextField from "@mui/material/TextField";
 import { teal } from "@mui/material/colors";
-import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 
 const Rooms = ({ currentUser }: { currentUser: any }) => {
@@ -25,20 +24,13 @@ const Rooms = ({ currentUser }: { currentUser: any }) => {
     socket.emit(EVENTS.CLIENT.CREATE_ROOM, { roomName, currentUser });
     setRoomName("");
   };
-  const handleJoinRoom = async () => {
-    socket.emit(EVENTS.CLIENT.JOINING_ROOM, { currentRoomId, currentUser });
-  };
-
-  const style = {
-    position: "absolute" as "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    width: 400,
-    bgcolor: "background.paper",
-    border: "2px solid #000",
-    boxShadow: 24,
-    p: 4,
+  const handleJoinRoom = async (e: any) => {
+    const clickedRoom = e.target.id;
+    if (!clickedRoom) {
+      return;
+    }
+    console.log(clickedRoom);
+    socket.emit(EVENTS.CLIENT.JOINING_ROOM, { clickedRoom, currentUser });
   };
 
   return (
@@ -59,19 +51,24 @@ const Rooms = ({ currentUser }: { currentUser: any }) => {
               <button onClick={handleCreateRoom}>Enter</button>
             </div>
           </Modal>
-          <div className="room_add-btn" onClick={handleOpen}>
-            ADD ROOM
-          </div>
-          {rooms.map((elem) => (
-            <div
-              key={elem._id}
-              onClick={handleJoinRoom}
-              className="room__wrapper"
-            >
-              <Avatar sx={{ bgcolor: teal["A400"] }}>{elem.title[0]}</Avatar>
-              <p className="room__title">{elem.title}</p>
-            </div>
-          ))}
+          <section>
+            <div className="room__wrapper room__add-btn">ADD ROOMS</div>
+            {rooms.map((elem) => {
+              return (
+                <div
+                  key={elem._id}
+                  id={elem._id}
+                  className="room__wrapper"
+                  onClick={handleJoinRoom}
+                >
+                  <Avatar sx={{ bgcolor: teal["A400"] }}>
+                    {elem.title[0]}
+                  </Avatar>
+                  <p className="room__title">{elem.title}</p>
+                </div>
+              );
+            })}
+          </section>
         </div>
       )}
     </>

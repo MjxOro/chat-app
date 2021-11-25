@@ -6,7 +6,6 @@ export interface IRoomModel extends mongoose.Document {
   owner: string;
   title: string;
   groupPicture?: string;
-  members: Array<string>;
   createdAt?: number;
 }
 
@@ -16,7 +15,6 @@ const roomSchema = new Schema<IRoomModel>({
   owner: { type: String, required: true, ref: "User" },
   title: { type: String, required: true },
   groupPicture: { type: String, default: "" },
-  members: [{ type: Schema.Types.ObjectId, ref: "User", required: true }],
   createdAt: { type: Number, default: +new Date() },
 });
 
