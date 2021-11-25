@@ -1,44 +1,75 @@
 import React, { useRef, useState } from "react";
 import useSockets from "../../context/SocketContext";
 import EVENTS from "../../config/socketEvents";
+import Avatar from "@mui/material/Avatar";
+import TextField from "@mui/material/TextField";
+import { teal } from "@mui/material/colors";
+import Box from "@mui/material/Box";
+import Modal from "@mui/material/Modal";
 
-const NewRoomModal: React.FC = () => {
-  return (
-    <div>
-      <h1>MODAL</h1>
-    </div>
-  );
-};
-
-const Rooms = ({ currentUser }: { currentUser: object }) => {
+const Rooms = ({ currentUser }: { currentUser: any }) => {
   const { socket, currentRoomId, rooms } = useSockets();
-  const newRoomRef: any = useRef();
-  console.log(rooms); //should probably show array of objects
+  const [roomName, setRoomName] = useState<string>("");
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const handleOpen = () => setShowModal(true);
+  const handleClose = () => setShowModal(false);
+  const handleTextFieldChange = (e: any) => {
+    setRoomName(e.target.value);
+  };
   const handleCreateRoom = (e: any) => {
     e.preventDefault();
-    //get roomName
-    const roomName = newRoomRef.current.value || "";
-    //empty handler
-    if (!String(roomName).trim()) {
+    console.log(roomName);
+    if (!roomName.trim()) {
       return;
     }
     socket.emit(EVENTS.CLIENT.CREATE_ROOM, { roomName, currentUser });
-    newRoomRef.current.value = null;
+    setRoomName("");
   };
   const handleJoinRoom = async () => {
     socket.emit(EVENTS.CLIENT.JOINING_ROOM, { currentRoomId, currentUser });
+  };
+
+  const style = {
+    position: "absolute" as "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: 400,
+    bgcolor: "background.paper",
+    border: "2px solid #000",
+    boxShadow: 24,
+    p: 4,
   };
 
   return (
     <>
       {rooms && (
         <div>
-          <input ref={newRoomRef} placeholder="Enter Room Name here" />
-          <button onClick={handleCreateRoom}>Enter</button>
+          <Modal open={showModal} onClose={handleClose}>
+            <div className="modal">
+              <TextField
+                id="standard-multiline-flexible"
+                label="Room Name"
+                multiline
+                maxRows={4}
+                value={roomName}
+                onChange={handleTextFieldChange}
+                variant="standard"
+              />
+              <button onClick={handleCreateRoom}>Enter</button>
+            </div>
+          </Modal>
+          <div className="room_add-btn" onClick={handleOpen}>
+            ADD ROOM
+          </div>
           {rooms.map((elem) => (
-            <div>
-              <p>{elem.title}</p>
-              <p>{`Owner: ${elem.owner}`}</p>
+            <div
+              key={elem._id}
+              onClick={handleJoinRoom}
+              className="room__wrapper"
+            >
+              <Avatar sx={{ bgcolor: teal["A400"] }}>{elem.title[0]}</Avatar>
+              <p className="room__title">{elem.title}</p>
             </div>
           ))}
         </div>
