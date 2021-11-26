@@ -2,7 +2,7 @@ import { createContext, useEffect, useState, useContext } from "react";
 import axios from "axios";
 import { AxiosResponse } from "axios";
 
-const AuthContext = createContext<any>({});
+export const AuthContext = createContext<any>({});
 export const AuthProvider = (props: any) => {
   const [isAuth, setIsAuth] = useState<any>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
