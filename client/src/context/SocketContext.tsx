@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import io, { Socket } from "socket.io-client";
 import EVENTS from "../config/socketEvents";
 import axios from "axios";
+import { Canvas } from "@react-three/fiber";
 interface ISocketContext {
   socket: Socket;
   currentRoomId?: string;
@@ -10,7 +11,7 @@ interface ISocketContext {
   setMessages: Function;
 }
 const socket = io("http://localhost:8080");
-const SocketContext = createContext<ISocketContext>({
+export const SocketContext = createContext<ISocketContext>({
   socket,
   rooms: [],
   messages: [],
@@ -26,6 +27,7 @@ export const SocketsProvider = (props: any) => {
   };
   useEffect(() => {
     getRooms();
+    console.log(rooms);
     socket.on(EVENTS.SERVER.ROOMS, ({ rooms, roomId }) => {
       setCurrentRoomId(roomId);
       setRooms(rooms);
@@ -43,6 +45,15 @@ export const SocketsProvider = (props: any) => {
     });
   }, []);
 
+  if (props.canvasProvider) {
+    return (
+      <SocketContext.Provider
+        value={{ socket, currentRoomId, rooms, messages, setMessages }}
+      >
+        <Canvas>{props.children}</Canvas>
+      </SocketContext.Provider>
+    );
+  }
   return (
     <SocketContext.Provider
       value={{ socket, currentRoomId, rooms, messages, setMessages }}

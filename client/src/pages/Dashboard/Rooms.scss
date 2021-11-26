@@ -1,5 +1,16 @@
 .modal{
   position: absolute;
+  height: 100vw;
+  width: 100vw;
+  background-color: rgba(0,0,0,0.75);
+  z-index: 1;
+  &--close{
+    display:none;
+
+  };
+  &__box{
+  z-index: 1000;
+  position: absolute;
   display: flex;
   justify-content: space-around;
   align-items: center;
@@ -11,12 +22,13 @@
   background-color: white;
   outline: none;
   border-radius: 0.25rem;
+}
 
 }
 
 .room{
-  height: 100%;
-  width:100%;
+  width: 100vw;
+  height: 100vh;
   &__add-btn{
     justify-content: center;
   }

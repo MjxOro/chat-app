@@ -1,20 +1,24 @@
-import React from "react";
+import React, { useContext } from "react";
 import Chat from "./Chat";
-import useAuthenticate from "../../context/AuthContext";
+import useAuthenticate, {
+  AuthContext,
+  AuthProvider,
+} from "../../context/AuthContext";
 import Rooms from "./Rooms";
+import { Canvas } from "@react-three/fiber";
+import { Html } from "@react-three/drei";
+import useSockets from "../../context/SocketContext";
 
 const Dashboard: React.FC = () => {
-  const { isAuth: currentUser } = useAuthenticate();
-  console.log(currentUser);
-
+  const { isAuth } = useAuthenticate();
+  const { socket, rooms } = useSockets();
   return (
     <>
-      {currentUser && (
-        <div>
-          <Rooms currentUser={currentUser} />
-          <Chat currentUser={currentUser} />
-        </div>
-      )}
+      <Canvas>
+        <Html center>
+          <Rooms isAuth={isAuth} socket={socket} rooms={rooms} />
+        </Html>
+      </Canvas>
     </>
   );
 };
