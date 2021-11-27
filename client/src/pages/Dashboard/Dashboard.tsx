@@ -11,13 +11,19 @@ import useSockets from "../../context/SocketContext";
 
 const Dashboard: React.FC = () => {
   const { isAuth } = useAuthenticate();
-  const { socket, rooms } = useSockets();
+  const { socket, rooms, messages, currentRoomId } = useSockets();
   return (
     <>
       <Canvas>
-        <Html center>
+        <Html style={{ transform: "translate(-166%,-50%)" }}>
           <Rooms isAuth={isAuth} socket={socket} rooms={rooms} />
         </Html>
+        <Chat
+          isAuth={isAuth}
+          socket={socket}
+          messages={messages}
+          currentRoomId={currentRoomId}
+        />
       </Canvas>
     </>
   );

@@ -1,24 +1,23 @@
 .modal{
-  position: absolute;
-  height: 100vw;
+  position:fixed;
   width: 100vw;
-  background-color: rgba(0,0,0,0.75);
+  height: 100vh;
+  background-color: rgba(0,0,0,0.25);
   z-index: 1;
   &--close{
     display:none;
 
   };
   &__box{
-  z-index: 1000;
+  bottom: 50%;
+  left: 30vw;
   position: absolute;
+  z-index: 1000;
   display: flex;
   justify-content: space-around;
   align-items: center;
-  left: 50%;
-  top: 25%;
-  transform: translate(-50%,-50%);
-  width: 75%;
-  height: 25%;
+  width: 40rem;
+  height: 20rem;
   background-color: white;
   outline: none;
   border-radius: 0.25rem;
@@ -27,8 +26,9 @@
 }
 
 .room{
-  width: 100vw;
+  width: 30vw;
   height: 100vh;
+  border: solid 1px black;
   &__add-btn{
     justify-content: center;
   }
