@@ -4,15 +4,16 @@
   height: 100vh;
   background-color: rgba(0,0,0,0.25);
   z-index: 1;
+  display:flex;
+  justify-content: center;
   &--close{
     display:none;
 
   };
   &__box{
-  bottom: 50%;
-  left: 30vw;
+  bottom: 50vh;
   position: absolute;
-  z-index: 1000;
+  z-index: 1;
   display: flex;
   justify-content: space-around;
   align-items: center;
