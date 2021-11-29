@@ -56,10 +56,10 @@ app.use(roomRoutes);
 //Hadnle React Routing
 if ((process.env.NODE_ENV as string) === "production") {
   // Handle React routing, return all requests to React app
-  app.use(express.static(path.join(__dirname, "..", "client", "buiild")));
+  app.use(express.static(path.join(__dirname, "..", "client", "build")));
   app.get("*", (req: Request, res: Response) => {
     res.sendFile(
-      path.resolve(__dirname, "..", "client", "build", "index.html")
+      path.resolve(__dirname, "..", "..", "client", "build", "index.html")
     );
   });
 }
