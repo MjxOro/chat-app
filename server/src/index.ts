@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import express, { Express } from "express";
+import express, { Express, Request, Response } from "express";
 import session from "express-session";
 import mongoose from "mongoose";
 import passport from "./middleware/passport";
@@ -10,6 +10,8 @@ import userRoute from "./routes/userRoute";
 import { createServer } from "http";
 import { Server } from "socket.io";
 import socket from "./socket";
+import morgan from "morgan";
+import path from "path";
 
 dotenv.config();
 const PORT: number = Number(process.env.PORT as string) || 8080;
@@ -27,6 +29,9 @@ mongoose.connect(`${process.env.MONGODB_URL}`, () => {
 
 // initialize middleware
 app.use(express.json());
+app.use(
+  morgan((process.env.NODE_ENV as string) === "productiom" ? "combined" : "dev")
+);
 app.use(cors({ origin: process.env.CORSORIGIN as string, credentials: true }));
 app.set("trust proxy", 1);
 app.use(
@@ -47,6 +52,16 @@ app.use(passport.session());
 app.use(oauthRoute);
 app.use(userRoute);
 app.use(roomRoutes);
+
+//Hadnle React Routing
+if ((process.env.NODE_ENV as string) === "production") {
+  // Handle React routing, return all requests to React app
+  app.get("*", (req: Request, res: Response) => {
+    res.sendFile(
+      path.resolve(__dirname, "..", "client", "build", "index.html")
+    );
+  });
+}
 
 //Server ports
 httpServer.listen(PORT, async () => {
