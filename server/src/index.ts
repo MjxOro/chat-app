@@ -13,6 +13,7 @@ import socket from "./socket";
 import morgan from "morgan";
 import path from "path";
 
+const MongoDBStore = require("connect-mongodb-session")(session);
 dotenv.config();
 const PORT: number = Number(process.env.PORT as string) || 8080;
 const app: Express = express();
@@ -26,6 +27,9 @@ const io = new Server(httpServer, {
 mongoose.connect(`${process.env.MONGODB_URL}`, () => {
   console.log("Connected to DB");
 });
+const store = new MongoDBStore({
+  uri: process.env.MONGODB_URL as string,
+});
 
 // initialize middleware
 app.use(express.json());
@@ -38,6 +42,7 @@ app.use(
   session({
     secret: process.env.EXPRESS_SESSION_SECRET as string,
     resave: true,
+    store: store,
     saveUninitialized: false,
     cookie: {
       httpOnly: true,
