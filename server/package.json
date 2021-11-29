@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "node build/index.js",
+    "start": "nodemon src/index.ts",
     "build": "tsc",
     "dev": "nodemon src/index.ts"
   },
