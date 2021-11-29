@@ -7,7 +7,7 @@
   "license": "MIT",
   "scripts": {
     "start": "npm run start --prefix server",
-    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm install --production --prefix server &&  npm run build --prefix client"
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm install  --prefix server && npm run build --prefix server &&  npm run build --prefix client"
   },
   "engines": {
     "node": "14.x"
