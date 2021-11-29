@@ -37,9 +37,7 @@ const LandingPage: React.FC = () => {
                   src={googleOAuthBtn}
                   className="landing__oauth"
                   onClick={() => {
-                    window.location.href = `${
-                      process.env.REACT_APP_HOST as string
-                    }/api/oauth/google`;
+                    window.location.href = "/api/oauth/google";
                   }}
                 />
               </div>
