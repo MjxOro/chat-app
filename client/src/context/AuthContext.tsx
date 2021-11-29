@@ -1,5 +1,5 @@
 import { createContext, useEffect, useState, useContext } from "react";
-import axiosInstance from "../config/axiosInstance";
+import axios from "axios";
 import { AxiosResponse } from "axios";
 
 export const AuthContext = createContext<any>({});
@@ -8,7 +8,7 @@ export const AuthProvider = (props: any) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const getAuth = async () => {
     try {
-      const res: AxiosResponse = await axiosInstance.get("/api/isAuth");
+      const res: AxiosResponse = await axios.get("/api/isAuth");
       setIsAuth(res.data);
       setIsLoading(false);
     } catch (err) {
