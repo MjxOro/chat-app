@@ -1,8 +1,8 @@
 {
   "name": "chatapp",
   "version": "0.0.0",
-  "private": false,
-  "proxy": "http://localhost:8080",
+  "private": true,
+  "proxy": "https://chat-app-oro.herokuapp.com",
   "dependencies": {
     "typescript": "^4.5.2",
     "@emotion/react": "^11.6.0",
