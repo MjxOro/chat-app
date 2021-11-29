@@ -29,6 +29,7 @@ mongoose.connect(`${process.env.MONGODB_URL}`, () => {
 
 // initialize middleware
 app.use(express.json());
+app.use(express.static(path.join(__dirname, "buiild")));
 app.use(
   morgan((process.env.NODE_ENV as string) === "productiom" ? "combined" : "dev")
 );
