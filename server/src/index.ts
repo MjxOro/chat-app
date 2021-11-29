@@ -17,7 +17,7 @@ const app: Express = express();
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: process.env.CORSORIGIN as string,
   },
 });
 //connect to mongoDB
@@ -27,7 +27,7 @@ mongoose.connect(`${process.env.MONGODB_URL}`, () => {
 
 // initialize middleware
 app.use(express.json());
-app.use(cors({ origin: "http://localhost:3000", credentials: true }));
+app.use(cors({ origin: process.env.CORSORIGIN as string, credentials: true }));
 app.set("trust proxy", 1);
 app.use(
   session({

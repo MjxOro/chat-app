@@ -11,7 +11,6 @@ passport.serializeUser((user: { _id?: any }, cb: any) => {
 passport.deserializeUser((id: string, cb: any) => {
   User.findById(id, (error: Error, data: IUserModel) => {
     if (error) {
-      console.log("HERE");
       return cb(error, null);
     }
     return cb(null, data);

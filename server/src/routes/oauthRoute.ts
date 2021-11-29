@@ -11,11 +11,11 @@ router.get(
 router.get(
   "/api/sessions/oauth/google",
   passport.authenticate("google", {
-    failureRedirect: "http://localhost:3000",
+    failureRedirect: process.env.CORSORIGIN as string,
     session: true,
   }),
   (req: Request, res: Response) => {
-    return res.redirect("http://localhost:3000");
+    return res.redirect(process.env.CORSORIGIN as string);
   }
 );
 router.get("/api/isAuth", (req: Request, res: Response) => {
@@ -36,7 +36,7 @@ router.get("/api/oauth/logout", (req: Request, res: Response) => {
     if (error) {
       throw error;
     }
-    res.redirect("http://localhost:3000");
+    res.redirect(process.env.CORSORIGIN as string);
   });
 });
 
