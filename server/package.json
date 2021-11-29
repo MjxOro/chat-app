@@ -5,8 +5,7 @@
   "license": "MIT",
   "scripts": {
     "start": "node build/index.js",
-    "build": "tsc",
-    "postinstall": "npm run build"
+    "dev": "nodemon src/index.ts"
   },
   "devDependencies": {
     "@types/axios": "^0.14.0",
