@@ -6,11 +6,10 @@
   "author": "Matthew Oro <MatthewEOro@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "start": "yarn start --prefix server",
-    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false yarn install --prefix client && yarn install  --prefix server && yarn build --prefix server &&  yarn build --prefix client"
+    "start": "npm run start --prefix server",
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm install  --prefix server && npm run build --prefix server &&  npm run build --prefix client"
   },
   "engines": {
-    "node": "14.x",
-    "yarn": "1.x"
+    "node": "14.x"
   }
 }
