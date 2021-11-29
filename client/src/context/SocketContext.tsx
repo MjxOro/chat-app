@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import io, { Socket } from "socket.io-client";
 import EVENTS from "../config/socketEvents";
-import axios from "axios";
+import axiosInstance from "../config/axiosInstance";
 import { Canvas } from "@react-three/fiber";
 interface ISocketContext {
   socket: Socket;
@@ -22,7 +22,7 @@ export const SocketsProvider = (props: any) => {
   const [messages, setMessages] = useState<any[]>([]);
   const [rooms, setRooms] = useState<any[]>([]);
   const getRooms = async () => {
-    const res = await axios.get("/api/getRooms");
+    const res = await axiosInstance.get("/api/getRooms");
     setRooms(res.data);
   };
   useEffect(() => {
