@@ -10,7 +10,7 @@ interface ISocketContext {
   messages: any[];
   setMessages: Function;
 }
-const socket = io("http://localhost:8080");
+const socket = io(process.env.REACT_APP_HOST as string);
 export const SocketContext = createContext<ISocketContext>({
   socket,
   rooms: [],

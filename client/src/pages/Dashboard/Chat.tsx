@@ -1,9 +1,11 @@
 import { useEffect, useRef, useState } from "react";
-import useSockets from "../../context/SocketContext";
 import EVENTS from "../../config/socketEvents";
 import { ScrollControls, Scroll, Html, useScroll } from "@react-three/drei";
 import "./Chat.scss";
 import { useFrame, useThree } from "@react-three/fiber";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import { teal } from "@mui/material/colors";
 
 const ChatMessages = ({ messages, setScrollHook, currentUser }: any) => {
   const data = useScroll();
@@ -44,8 +46,8 @@ const Chat = ({
   messages,
   currentRoomId,
 }: any) => {
-  const newMessageRef: any = useRef();
   const [scrollHook, setScrollHook] = useState<any>(null);
+  const [sentMessage, setSentMessage] = useState<string>("");
   const setInitScrollY = async () => {
     if (scrollHook) {
       scrollHook.el.scrollTo(0, scrollHook.el.scrollHeight);
@@ -57,21 +59,25 @@ const Chat = ({
     setInitScrollY();
     console.log("state Change");
   }, [scrollHook]);
+  const handleInputChange = (e: any) => {
+    setSentMessage(e.target.value);
+  };
   const handleSendMessage = (e: any) => {
-    e.preventDefault();
-    const sentMessage = newMessageRef.current.value || "";
-    if (!String(sentMessage).trim() || !currentRoomId) {
-      //If message empty nor roomId, dont send
-      newMessageRef.current.value = null;
-      return;
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      if (!String(sentMessage).trim() || !currentRoomId) {
+        //If message empty nor roomId, dont send
+        setSentMessage("");
+        return;
+      }
+      console.log(currentRoomId);
+      socket.emit(EVENTS.CLIENT.SEND_ROOM_MESSAGE, {
+        sentMessage,
+        currentUser,
+        currentRoomId,
+      });
+      setSentMessage("");
     }
-    console.log(currentRoomId);
-    socket.emit(EVENTS.CLIENT.SEND_ROOM_MESSAGE, {
-      sentMessage,
-      currentUser,
-      currentRoomId,
-    });
-    newMessageRef.current.value = null;
   };
   const { viewport } = useThree();
   console.log(viewport.width, viewport.height);
@@ -91,9 +97,32 @@ const Chat = ({
           />
         </Scroll>
       </ScrollControls>
-      <Html position={[viewport.width * 0.01, -viewport.height * 0.4, 0]}>
-        <input ref={newMessageRef} placeholder="say something!" />
-        <button onClick={handleSendMessage}>Send</button>
+      <Html
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          width: "65vw",
+          height: "10vh",
+          backgroundColor: "white",
+        }}
+        position={[viewport.width * -0.18, -viewport.height * 0.4, 0]}
+      >
+        <TextField
+          fullWidth
+          id="outlined-multiline-flexible"
+          label={null}
+          multiline
+          minRows={1}
+          maxRows={5}
+          value={sentMessage}
+          onChange={handleInputChange}
+          onKeyPress={handleSendMessage}
+          style={{ margin: 0 }}
+        />
+        <div>OPTIONS1</div>
+        <div>OPTIONS2</div>
+        <div>OPTIONS3</div>
       </Html>
     </>
   );

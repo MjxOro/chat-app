@@ -49,14 +49,14 @@ const Rooms = ({ isAuth: currentUser, socket, rooms }: any) => {
     <>
       {rooms && (
         <div>
-          <section>
-            <div
-              className={showModal ? "modal" : "modal--close"}
-              onClick={handleClose}
-            />
+          <div
+            className={showModal ? "modal" : "modal--close"}
+            onClick={handleClose}
+          >
             <div
               className={showModal ? "modal__box" : "modal--close"}
               style={{ zIndex: 10000 }}
+              onClick={(e) => e.stopPropagation()}
             >
               <TextField
                 id="standard-multiline-flexible"
@@ -76,7 +76,7 @@ const Rooms = ({ isAuth: currentUser, socket, rooms }: any) => {
                 Confirm
               </Button>
             </div>
-          </section>
+          </div>
           <section className="room">
             <div className="room__wrapper room__add-btn" onClick={handleOpen}>
               <AddIcon
