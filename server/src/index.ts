@@ -13,6 +13,7 @@ import socket from "./socket";
 import morgan from "morgan";
 import path from "path";
 
+const MongoDBStore = require("connect-mongodb-session")(session);
 dotenv.config();
 const PORT: number = Number(process.env.PORT as string) || 8080;
 const app: Express = express();
@@ -26,6 +27,9 @@ const io = new Server(httpServer, {
 mongoose.connect(`${process.env.MONGODB_URL}`, () => {
   console.log("Connected to DB");
 });
+const store = new MongoDBStore({
+  uri: process.env.MONGODB_URL as string,
+});
 
 // initialize middleware
 app.use(express.json());
@@ -38,11 +42,13 @@ app.use(
   session({
     secret: process.env.EXPRESS_SESSION_SECRET as string,
     resave: true,
+    store: store,
     saveUninitialized: false,
     cookie: {
       httpOnly: true,
-      secure: false,
-      maxAge: 1000 * 60 * 60, //1 hour
+      sameSite: "none",
+      secure: true,
+      maxAge: 1000 * 60 * 60 * 6, //6 hour
     },
   })
 );
@@ -56,9 +62,10 @@ app.use(roomRoutes);
 //Hadnle React Routing
 if ((process.env.NODE_ENV as string) === "production") {
   // Handle React routing, return all requests to React app
+  app.use(express.static(path.join(__dirname, "..", "..", "client", "build")));
   app.get("*", (req: Request, res: Response) => {
     res.sendFile(
-      path.resolve(__dirname, "..", "client", "build", "index.html")
+      path.resolve(__dirname, "..", "..", "client", "build", "index.html")
     );
   });
 }
