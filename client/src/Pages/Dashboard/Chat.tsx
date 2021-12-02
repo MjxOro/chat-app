@@ -33,14 +33,14 @@ const ChatMessages = ({
   }, [currentroomId]);
   const handleMouseMove = (e: any) => {
     const cursorX = e.clientX / window.innerWidth - 1;
-    const cursorY = -(e.clientY / window.innerHeight - 0.5);
+    const cursorY = -((e.clientY * 0.25) / window.innerHeight - 2);
     if (messageRef.current[messages.length - 1]) {
       messages.forEach((elem: any, index: number) => {
         if (elem._senderId === currentUser._id) {
-          messageRef.current[index].position.y = -cursorY / 10;
+          messageRef.current[index].position.y = -cursorY;
           messageRef.current[index].rotation.y = cursorX / 5;
         } else {
-          messageRef.current[index].position.y = -cursorY / 10;
+          messageRef.current[index].position.y = -cursorY;
           messageRef.current[index].rotation.y = -cursorX / 5;
         }
       });
@@ -66,7 +66,7 @@ const ChatMessages = ({
               messageRef.current[index] = el;
             }}
             key={elem._id}
-            position={[isMe(), -1, 0]}
+            position={[isMe(), -2, 0]}
           >
             <Text
               anchorX={elem._senderId === currentUser._id ? "right" : "left"}
