@@ -46,7 +46,7 @@ export const SocketsProvider = (props: any) => {
       setMessages(getRoomMessage);
       console.log(messages);
     });
-  }, [socket]);
+  }, []);
 
   return (
     <SocketContext.Provider
