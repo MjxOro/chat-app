@@ -39,7 +39,11 @@ const socket = ({ io }: { io: Server }) => {
       const rooms = await Room.find({});
 
       socket.join(roomId);
-      socket.emit(EVENTS.SERVER.ROOMS, { rooms, roomId });
+
+      socket.broadcast.emit(EVENTS.SERVER.ROOMS, { rooms });
+      socket.emit(EVENTS.SERVER.ROOMS, { rooms });
+      socket.emit(EVENTS.SERVER.JOINED_ROOM, { roomId });
+
       console.log("DATA SENT");
       console.log(roomId);
     });
@@ -47,9 +51,8 @@ const socket = ({ io }: { io: Server }) => {
     // Handle User joing chat room
     socket.on(
       EVENTS.CLIENT.JOINING_ROOM,
-      async ({ currentUser, clickedRoom }) => {
+      async ({ clickedRoom, currentUser }) => {
         //add user to Room
-
         console.log(clickedRoom);
         socket.join(clickedRoom);
         const getRoomMessage = await Message.find({ _groupId: clickedRoom });
@@ -77,9 +80,7 @@ const socket = ({ io }: { io: Server }) => {
         getRoomMessage.sort((a, b) => a.createdAt - b.createdAt);
 
         //SEEN both sender and reciever
-        //socket.in().emit() did not work
-        socket.emit(EVENTS.SERVER.ROOM_MESSAGE, { getRoomMessage });
-        socket
+        socket.nsp
           .to(currentRoomId)
           .emit(EVENTS.SERVER.ROOM_MESSAGE, { getRoomMessage });
       }
