@@ -41,6 +41,7 @@ const Rooms = ({ isAuth: currentUser, socket, rooms, currentRoomId }: any) => {
     if (!clickedRoom) {
       return;
     }
+    socket.emit(EVENTS.CLIENT.LEAVE_ROOMS, { currentRoomId });
     console.log(clickedRoom);
     socket.emit(EVENTS.CLIENT.JOINING_ROOM, { clickedRoom, currentUser });
   };

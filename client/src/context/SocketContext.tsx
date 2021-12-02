@@ -31,7 +31,6 @@ export const SocketsProvider = (props: any) => {
       setRooms(rooms);
     });
     socket.on(EVENTS.SERVER.JOINED_ROOM, ({ roomId, getRoomMessage }) => {
-      console.log(roomId);
       console.log(getRoomMessage);
       setCurrentRoomId(roomId);
       if (getRoomMessage) {
@@ -41,19 +40,14 @@ export const SocketsProvider = (props: any) => {
       }
     });
     socket.on(EVENTS.SERVER.ROOM_MESSAGE, ({ getRoomMessage }) => {
+      if (!document.hasFocus()) {
+        document.title = "New Message....";
+      }
       setMessages(getRoomMessage);
+      console.log(messages);
     });
-  }, []);
+  }, [socket]);
 
-  if (props.canvasProvider) {
-    return (
-      <SocketContext.Provider
-        value={{ socket, currentRoomId, rooms, messages, setMessages }}
-      >
-        <Canvas>{props.children}</Canvas>
-      </SocketContext.Provider>
-    );
-  }
   return (
     <SocketContext.Provider
       value={{ socket, currentRoomId, rooms, messages, setMessages }}

@@ -10,6 +10,7 @@ export const EVENTS = {
     JOINING_ROOM: "JOINING_ROOM",
     SEND_ROOM_MESSAGE: "SEND_ROOM_MESSAGE",
     CLIENT_INIT: "CLIENT_INIT",
+    LEAVE_ROOMS: "LEAVE_ROOMS",
   },
   SERVER: {
     ROOMS: "ROOMS",
@@ -61,12 +62,16 @@ const socket = ({ io }: { io: Server }) => {
         socket.emit(EVENTS.SERVER.JOINED_ROOM, { roomId, getRoomMessage });
       }
     );
+    socket.on(EVENTS.CLIENT.LEAVE_ROOMS, async ({ currentRoomId }) => {
+      if (currentRoomId) {
+        socket.leave(currentRoomId);
+      }
+    });
 
     //Handle message sent to a room
     socket.on(
       EVENTS.CLIENT.SEND_ROOM_MESSAGE,
       async ({ currentRoomId, sentMessage, currentUser }) => {
-        socket.join(currentRoomId);
         const newMessage = new Message({
           _senderId: currentUser._id,
           _groupId: currentRoomId,
@@ -81,7 +86,7 @@ const socket = ({ io }: { io: Server }) => {
 
         //SEEN both sender and reciever
         socket.nsp
-          .to(currentRoomId)
+          .in(currentRoomId)
           .emit(EVENTS.SERVER.ROOM_MESSAGE, { getRoomMessage });
       }
     );

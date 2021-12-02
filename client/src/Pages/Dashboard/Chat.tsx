@@ -127,12 +127,12 @@ const Chat = ({
         setSentMessage("");
         return;
       }
-      console.log(currentRoomId);
       socket.emit(EVENTS.CLIENT.SEND_ROOM_MESSAGE, {
         sentMessage,
         currentUser,
         currentRoomId,
       });
+      console.log(messages);
       setSentMessage("");
     }
   };
