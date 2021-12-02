@@ -10,7 +10,7 @@ import Modal from "@mui/material/Modal";
 import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
 
-const Rooms = ({ isAuth: currentUser, socket, rooms }: any) => {
+const Rooms = ({ isAuth: currentUser, socket, rooms, currentRoomId }: any) => {
   const [roomName, setRoomName] = useState<string>("");
   const [showModal, setShowModal] = useState<boolean>(false);
   const handleOpen = () => setShowModal(true);
@@ -91,6 +91,12 @@ const Rooms = ({ isAuth: currentUser, socket, rooms }: any) => {
             {rooms.map((elem: any) => {
               return (
                 <div
+                  style={{
+                    backgroundColor:
+                      elem._id === currentRoomId
+                        ? "rgba(29, 233, 182, 0.5)"
+                        : "white",
+                  }}
                   key={elem._id}
                   id={elem._id}
                   className="room__wrapper"

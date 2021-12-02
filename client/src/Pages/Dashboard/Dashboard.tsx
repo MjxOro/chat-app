@@ -16,7 +16,12 @@ const Dashboard: React.FC = () => {
     <>
       <Canvas>
         <Html style={{ transform: "translate(-166%,-50%)" }}>
-          <Rooms isAuth={isAuth} socket={socket} rooms={rooms} />
+          <Rooms
+            isAuth={isAuth}
+            socket={socket}
+            rooms={rooms}
+            currentRoomId={currentRoomId}
+          />
         </Html>
         <Chat
           isAuth={isAuth}

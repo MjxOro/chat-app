@@ -1,32 +1,89 @@
 import { useEffect, useRef, useState } from "react";
 import EVENTS from "../../config/socketEvents";
-import { ScrollControls, Scroll, Html, useScroll } from "@react-three/drei";
+import {
+  ScrollControls,
+  Scroll,
+  Html,
+  useScroll,
+  Text,
+} from "@react-three/drei";
 import "./Chat.scss";
 import { useFrame, useThree } from "@react-three/fiber";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import { teal } from "@mui/material/colors";
 
-const ChatMessages = ({ messages, setScrollHook, currentUser }: any) => {
+const ChatMessages = ({
+  messages,
+  setScrollHook,
+  currentroomId,
+  currentUser,
+  viewport,
+}: any) => {
   const data = useScroll();
+  const { camera } = useThree();
+  const messageRef: any = useRef([]);
   //pass hook value to parent component
   //ThreeJs renderer will update scroller height when messages composed
   useFrame(() => {
     setScrollHook(data);
   });
+  useEffect(() => {
+    return window.removeEventListener("mousemove", handleMouseMove);
+  }, [currentroomId]);
+  const handleMouseMove = (e: any) => {
+    const cursorX = e.clientX / window.innerWidth - 1;
+    const cursorY = -(e.clientY / window.innerHeight - 0.5);
+    if (messageRef.current[messages.length - 1]) {
+      messages.forEach((elem: any, index: number) => {
+        if (elem._senderId === currentUser._id) {
+          messageRef.current[index].position.y = -cursorY / 10;
+          messageRef.current[index].rotation.y = cursorX / 5;
+        } else {
+          messageRef.current[index].position.y = -cursorY / 10;
+          messageRef.current[index].rotation.y = -cursorX / 5;
+        }
+      });
+    }
+  };
+  window.addEventListener("mousemove", handleMouseMove);
 
   return (
     <>
-      {messages.map((elem: any, index: any) => {
-        const position = index * 10;
-        let isMe = "0";
+      {messages.map((elem: any, index: number) => {
+        const position = -index;
+        const isMe = (): number => {
+          if (elem._senderId === currentUser._id) {
+            return 5;
+          } else {
+            return -1.75;
+          }
+        };
 
-        if (elem._senderId !== currentUser._id) {
-          isMe = "-40vw";
-        } else {
-          isMe = "10vw";
-        }
         return (
+          <group
+            ref={(el) => {
+              messageRef.current[index] = el;
+            }}
+            key={elem._id}
+            position={[isMe(), -1, 0]}
+          >
+            <Text
+              anchorX={elem._senderId === currentUser._id ? "right" : "left"}
+              color="black"
+              position={[0, position + 3.25, 0]}
+            >
+              {elem.owner}
+            </Text>
+            <Text
+              anchorX={elem._senderId === currentUser._id ? "right" : "left"}
+              color="black"
+              position={[0, position + 3, 0]}
+            >
+              {elem.content}
+            </Text>
+          </group>
+          /*
           <div
             key={elem._id}
             className="chat__message"
@@ -35,6 +92,7 @@ const ChatMessages = ({ messages, setScrollHook, currentUser }: any) => {
             <div>{elem.content}</div>
             <div>{elem.owner}</div>
           </div>
+          */
         );
       })}
     </>
@@ -57,7 +115,6 @@ const Chat = ({
   //Always points to the Latest message: sending or recieving
   useEffect(() => {
     setInitScrollY();
-    console.log("state Change");
   }, [scrollHook]);
   const handleInputChange = (e: any) => {
     setSentMessage(e.target.value);
@@ -80,20 +137,20 @@ const Chat = ({
     }
   };
   const { viewport } = useThree();
-  console.log(viewport.width, viewport.height);
 
   return (
     <>
       <ScrollControls
         distance={1}
         damping={100}
-        pages={messages.length / 10 || 0}
+        pages={(messages.length + 3) / viewport.height || 0}
       >
-        <Scroll html>
+        <Scroll>
           <ChatMessages
             messages={messages}
             setScrollHook={setScrollHook}
             currentUser={currentUser}
+            currentroomId={currentRoomId}
           />
         </Scroll>
       </ScrollControls>
