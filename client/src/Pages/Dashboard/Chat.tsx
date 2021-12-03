@@ -21,23 +21,46 @@ const ChatMessages = ({
   const data = useScroll();
   const messageRef: any = useRef([]);
   //pass hook value to parent component
-  //ThreeJs renderer will update scroller height when messages composed
-  const handleMouseMove = (e: any) => {
-    const cursorX = e.clientX / window.innerWidth - 1;
-    const cursorY = -((e.clientY * 0.25) / window.innerHeight - 2);
-  };
-  window.addEventListener("mousemove", handleMouseMove);
+  //ThreeJs useFram will update scroller height when messages composed
+  //Will initially rotate shape infinately
   useFrame(() => {
     setScrollHook(data);
-    if (messageRef.current.length) {
-      messages.forEach((elem: any, index: number) => {
-        messageRef.current[index].rotation.y += 0.01;
+    if (messageRef.current.length !== 0) {
+      messageRef.current.forEach((elem: any) => {
+        if (!elem) {
+          return;
+        }
+        elem.rotation.y += 0.01;
       });
     }
   });
+  //Handleers
+  const handleMouseMove = (e: any) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const cursorX = e.clientX / window.innerWidth - 1;
+    const cursorY = -((e.clientY * 0.25) / window.innerHeight - 2);
+    if (messageRef.current.length !== 0) {
+      messageRef.current.forEach((elem: any) => {
+        if (!elem) {
+          return;
+        }
+        elem.rotation.x += cursorX * 0.001;
+        elem.rotation.y += cursorY * 0.001;
+      });
+    }
+  };
+
+  // Mount Global MouseMove listener and unmount when room changes
   useEffect(() => {
-    return window.removeEventListener("mousemove", handleMouseMove);
-  }, [currentroomId]);
+    if (messageRef.current.length !== messages.length) {
+      messageRef.current.length = messages.length;
+    }
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+    };
+  }, [messages.length]);
 
   return (
     <>
@@ -62,7 +85,7 @@ const ChatMessages = ({
                 args={[0.25, 0.5, 0.1]}
                 radius={0.1}
                 smoothness={2}
-                position={[isMe() + 0.15, position + 3, -0.2]}
+                position={[isMe() + 0.15, position + 3, -0.5]}
               >
                 <meshToonMaterial
                   color={
