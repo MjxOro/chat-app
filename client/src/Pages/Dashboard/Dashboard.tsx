@@ -1,9 +1,6 @@
-import React, { useContext, Suspense, useState } from "react";
+import React, { Suspense } from "react";
 import Chat from "./Chat";
-import useAuthenticate, {
-  AuthContext,
-  AuthProvider,
-} from "../../context/AuthContext";
+import useAuthenticate from "../../context/AuthContext";
 import Rooms from "./Rooms";
 import { Canvas } from "@react-three/fiber";
 import { Html, Preload } from "@react-three/drei";
@@ -26,12 +23,7 @@ const Dashboard: React.FC = () => {
               currentRoomId={currentRoomId}
             />
           </Html>
-          <Chat
-            isAuth={isAuth}
-            socket={socket}
-            messages={messages}
-            currentRoomId={currentRoomId}
-          />
+          <Chat isAuth={isAuth} socket={socket} messages={messages} />
           <Preload />
         </Suspense>
       </Canvas>

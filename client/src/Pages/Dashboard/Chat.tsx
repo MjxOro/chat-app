@@ -12,12 +12,7 @@ import "./Chat.scss";
 import { useFrame, useThree } from "@react-three/fiber";
 import TextField from "@mui/material/TextField";
 
-const ChatMessages = ({
-  messages,
-  setScrollHook,
-  currentroomId,
-  currentUser,
-}: any) => {
+const ChatMessages = ({ messages, setScrollHook, currentUser }: any) => {
   const data = useScroll();
   const messageRef: any = useRef([]);
   //pass hook value to parent component
