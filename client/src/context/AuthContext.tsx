@@ -6,10 +6,12 @@ export const AuthContext = createContext<any>({});
 export const AuthProvider = (props: any) => {
   const [isAuth, setIsAuth] = useState<any>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  console.log(isAuth);
   const getAuth = async () => {
     try {
       const res: AxiosResponse = await axios.get("/api/isAuth");
       setIsAuth(res.data);
+      console.log(res.data);
       setIsLoading(false);
     } catch (err) {
       console.log(err);

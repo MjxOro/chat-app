@@ -34,10 +34,19 @@ const store = new MongoDBStore({
 // initialize middleware
 app.use(express.json());
 app.use(
-  morgan((process.env.NODE_ENV as string) === "productiom" ? "combined" : "dev")
+  morgan((process.env.NODE_ENV as string) === "production" ? "combined" : "dev")
 );
+
 app.use(cors({ origin: process.env.CORSORIGIN as string, credentials: true }));
 app.set("trust proxy", 1);
+const isSecure = () => {
+  if (process.env.NODE_ENV === "production") {
+    return true;
+  } else {
+    return false;
+  }
+};
+console.log(isSecure());
 app.use(
   session({
     secret: process.env.EXPRESS_SESSION_SECRET as string,
@@ -46,8 +55,8 @@ app.use(
     saveUninitialized: false,
     cookie: {
       httpOnly: true,
-      sameSite: "none",
-      secure: true,
+      //sameSite: "none",
+      secure: isSecure(),
       maxAge: 1000 * 60 * 60 * 6, //6 hour
     },
   })
@@ -63,7 +72,7 @@ app.use(roomRoutes);
 if ((process.env.NODE_ENV as string) === "production") {
   // Handle React routing, return all requests to React app
   app.use(express.static(path.join(__dirname, "..", "..", "client", "build")));
-  app.get("*", (req: Request, res: Response) => {
+  app.get("*", (_: Request, res: Response) => {
     res.sendFile(
       path.resolve(__dirname, "..", "..", "client", "build", "index.html")
     );

@@ -1,3 +1,7 @@
+@use '../../partials/global' as *;
+
+
+
 .modal{
   position:fixed;
   width: 100vw;
@@ -27,9 +31,12 @@
 }
 
 .room{
-  width: 30vw;
+  width: 100vw;
   height: 100vh;
   border: solid 1px black;
+  @include tablet{
+    width: 30vw;
+  }
   &__add-btn{
     justify-content: center;
   }

@@ -10,6 +10,7 @@ export const EVENTS = {
     JOINING_ROOM: "JOINING_ROOM",
     SEND_ROOM_MESSAGE: "SEND_ROOM_MESSAGE",
     CLIENT_INIT: "CLIENT_INIT",
+    LEAVE_ROOMS: "LEAVE_ROOMS",
   },
   SERVER: {
     ROOMS: "ROOMS",
@@ -39,7 +40,11 @@ const socket = ({ io }: { io: Server }) => {
       const rooms = await Room.find({});
 
       socket.join(roomId);
-      socket.emit(EVENTS.SERVER.ROOMS, { rooms, roomId });
+
+      socket.broadcast.emit(EVENTS.SERVER.ROOMS, { rooms });
+      socket.emit(EVENTS.SERVER.ROOMS, { rooms });
+      socket.emit(EVENTS.SERVER.JOINED_ROOM, { roomId });
+
       console.log("DATA SENT");
       console.log(roomId);
     });
@@ -47,9 +52,8 @@ const socket = ({ io }: { io: Server }) => {
     // Handle User joing chat room
     socket.on(
       EVENTS.CLIENT.JOINING_ROOM,
-      async ({ currentUser, clickedRoom }) => {
+      async ({ clickedRoom, currentUser }) => {
         //add user to Room
-
         console.log(clickedRoom);
         socket.join(clickedRoom);
         const getRoomMessage = await Message.find({ _groupId: clickedRoom });
@@ -58,12 +62,16 @@ const socket = ({ io }: { io: Server }) => {
         socket.emit(EVENTS.SERVER.JOINED_ROOM, { roomId, getRoomMessage });
       }
     );
+    socket.on(EVENTS.CLIENT.LEAVE_ROOMS, async ({ currentRoomId }) => {
+      if (currentRoomId) {
+        socket.leave(currentRoomId);
+      }
+    });
 
     //Handle message sent to a room
     socket.on(
       EVENTS.CLIENT.SEND_ROOM_MESSAGE,
       async ({ currentRoomId, sentMessage, currentUser }) => {
-        socket.join(currentRoomId);
         const newMessage = new Message({
           _senderId: currentUser._id,
           _groupId: currentRoomId,
@@ -77,10 +85,8 @@ const socket = ({ io }: { io: Server }) => {
         getRoomMessage.sort((a, b) => a.createdAt - b.createdAt);
 
         //SEEN both sender and reciever
-        //socket.in().emit() did not work
-        socket.emit(EVENTS.SERVER.ROOM_MESSAGE, { getRoomMessage });
-        socket
-          .to(currentRoomId)
+        socket.nsp
+          .in(currentRoomId)
           .emit(EVENTS.SERVER.ROOM_MESSAGE, { getRoomMessage });
       }
     );

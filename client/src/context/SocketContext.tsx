@@ -27,33 +27,27 @@ export const SocketsProvider = (props: any) => {
   };
   useEffect(() => {
     getRooms();
-    console.log(rooms);
-    socket.on(EVENTS.SERVER.ROOMS, ({ rooms, roomId }) => {
-      setCurrentRoomId(roomId);
+    socket.on(EVENTS.SERVER.ROOMS, ({ rooms }) => {
       setRooms(rooms);
-      console.log(roomId);
     });
     socket.on(EVENTS.SERVER.JOINED_ROOM, ({ roomId, getRoomMessage }) => {
-      console.log(roomId);
       console.log(getRoomMessage);
       setCurrentRoomId(roomId);
-      setMessages(getRoomMessage);
+      if (getRoomMessage) {
+        setMessages(getRoomMessage);
+      } else {
+        setMessages([]);
+      }
     });
     socket.on(EVENTS.SERVER.ROOM_MESSAGE, ({ getRoomMessage }) => {
-      console.log("I SENT");
+      if (!document.hasFocus()) {
+        document.title = "New Message....";
+      }
       setMessages(getRoomMessage);
+      console.log(messages);
     });
   }, []);
 
-  if (props.canvasProvider) {
-    return (
-      <SocketContext.Provider
-        value={{ socket, currentRoomId, rooms, messages, setMessages }}
-      >
-        <Canvas>{props.children}</Canvas>
-      </SocketContext.Provider>
-    );
-  }
   return (
     <SocketContext.Provider
       value={{ socket, currentRoomId, rooms, messages, setMessages }}
