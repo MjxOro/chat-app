@@ -11,6 +11,8 @@ import {
 import "./Chat.scss";
 import { useFrame, useThree } from "@react-three/fiber";
 import TextField from "@mui/material/TextField";
+import ArrowBack from "@mui/icons-material/ArrowBackIos";
+import { teal } from "@mui/material/colors";
 
 const ChatMessages = ({ messages, setScrollHook, currentUser }: any) => {
   const data = useScroll();
@@ -176,7 +178,10 @@ const Chat = ({
                   backgroundColor: "white",
                 }}
               >
-                <button onClick={handleShowRooms}>Back</button>
+                <ArrowBack
+                  style={{ margin: "0 2rem", color: teal["A400"] }}
+                  onClick={handleShowRooms}
+                />
                 <h1>{currentRoom.title}</h1>
               </Html>
             ))}
