@@ -15,6 +15,8 @@ import TextField from "@mui/material/TextField";
 const ChatMessages = ({ messages, setScrollHook, currentUser }: any) => {
   const data = useScroll();
   const messageRef: any = useRef([]);
+  const { viewport } = useThree();
+  const margin = viewport.width * window.innerWidth < 768 ? 0.55 : 0.5;
   //pass hook value to parent component
   //ThreeJs useFram will update scroller height when messages composed
   //Will initially rotate shape infinately
@@ -29,34 +31,8 @@ const ChatMessages = ({ messages, setScrollHook, currentUser }: any) => {
       });
     }
   });
-  //Handleers
-  const handleMouseMove = (e: any) => {
-    e.preventDefault();
-    e.stopPropagation();
-    const cursorX = e.clientX / window.innerWidth - 1;
-    const cursorY = -((e.clientY * 0.25) / window.innerHeight - 2);
-    if (messageRef.current.length !== 0) {
-      messageRef.current.forEach((elem: any) => {
-        if (!elem) {
-          return;
-        }
-        elem.rotation.x += cursorX * 0.001;
-        elem.rotation.y += cursorY * 0.001;
-      });
-    }
-  };
 
-  // Mount Global MouseMove listener and unmount when room changes
-  useEffect(() => {
-    if (messageRef.current.length !== messages.length) {
-      messageRef.current.length = messages.length;
-    }
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-    };
-  }, [messages.length]);
-
+  //Make shapes more responsive
   return (
     <>
       <group>
@@ -64,9 +40,11 @@ const ChatMessages = ({ messages, setScrollHook, currentUser }: any) => {
           const position = -index;
           const isMe = (): number => {
             if (elem._senderId === currentUser._id) {
-              return 5;
+              return viewport.width / 2 - margin;
             } else {
-              return -1.75;
+              return window.innerWidth < 768
+                ? -(viewport.width / 2 - margin)
+                : -(viewport.width / 5 - margin);
             }
           };
 
@@ -91,6 +69,7 @@ const ChatMessages = ({ messages, setScrollHook, currentUser }: any) => {
               </RoundedBox>
               <Text
                 anchorX={elem._senderId === currentUser._id ? "right" : "left"}
+                anchorY="top"
                 position={[isMe(), position + 3.25, 0]}
               >
                 <meshToonMaterial color="black" attach="material" />
@@ -98,8 +77,14 @@ const ChatMessages = ({ messages, setScrollHook, currentUser }: any) => {
               </Text>
               <Text
                 anchorX={elem._senderId === currentUser._id ? "right" : "left"}
+                anchorY="top"
                 color="black"
                 position={[isMe(), position + 3, 0]}
+                maxWidth={
+                  window.innerWidth >= 768
+                    ? viewport.width * 0.5
+                    : viewport.width * 0.7
+                }
               >
                 <meshToonMaterial color="black" attach="material" />
                 {elem.content}
@@ -116,6 +101,9 @@ const Chat = ({
   socket,
   messages,
   currentRoomId,
+  showChat,
+  setShowChat,
+  rooms,
 }: any) => {
   const [scrollHook, setScrollHook] = useState<any>(null);
   const [sentMessage, setSentMessage] = useState<string>("");
@@ -125,6 +113,9 @@ const Chat = ({
       //scrollHook.offset = 1;
     }
   };
+  const currentRoom = rooms.find((elem: any) => {
+    return elem._id === currentRoomId;
+  });
   //Always points to the Latest message: sending or recieving
   useEffect(() => {
     setInitScrollY();
@@ -149,52 +140,80 @@ const Chat = ({
       setSentMessage("");
     }
   };
+  const handleShowRooms = () => {
+    setShowChat(false);
+  };
   const { viewport } = useThree();
+  console.log(currentRoom);
 
   return (
     <>
-      <ScrollControls
-        eps={1}
-        distance={1}
-        damping={100}
-        pages={(messages.length + 3) / viewport.height || 0}
-      >
-        <Scroll>
-          <ChatMessages
-            messages={messages}
-            setScrollHook={setScrollHook}
-            currentUser={currentUser}
-            currentroomId={currentRoomId}
-          />
-        </Scroll>
-      </ScrollControls>
-      <Html
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          width: "65vw",
-          height: "10vh",
-          backgroundColor: "white",
-        }}
-        position={[viewport.width * -0.18, -viewport.height * 0.4, 0]}
-      >
-        <TextField
-          fullWidth
-          id="outlined-multiline-flexible"
-          label={null}
-          multiline
-          minRows={1}
-          maxRows={5}
-          value={sentMessage}
-          onChange={handleInputChange}
-          onKeyPress={handleSendMessage}
-          style={{ margin: 0 }}
-        />
-        <div>OPTIONS1</div>
-        <div>OPTIONS2</div>
-        <div>OPTIONS3</div>
-      </Html>
+      {currentRoom && (
+        <>
+          <ScrollControls
+            eps={1}
+            distance={1}
+            damping={100}
+            pages={(messages.length + 3) / viewport.height || 0}
+          >
+            <Scroll>
+              <ChatMessages
+                messages={messages}
+                setScrollHook={setScrollHook}
+                currentUser={currentUser}
+                currentroomId={currentRoomId}
+              />
+            </Scroll>
+          </ScrollControls>
+          {window.innerWidth >= 768 ||
+            (showChat && (
+              <Html
+                fullscreen
+                style={{
+                  display: "flex",
+                  height: "5vh",
+                  alignItems: "center",
+                  backgroundColor: "white",
+                }}
+              >
+                <button onClick={handleShowRooms}>Back</button>
+                <h1>{currentRoom.title}</h1>
+              </Html>
+            ))}
+
+          <Html
+            style={{
+              backgroundColor: "white",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              width: window.innerWidth >= 768 ? "65vw" : "100vw",
+              height: "10vh",
+            }}
+            position={[
+              window.innerWidth >= 768
+                ? viewport.width * -0.18
+                : viewport.width * -0.5,
+              -viewport.height * 0.4,
+              0,
+            ]}
+          >
+            <TextField
+              fullWidth
+              id="outlined-multiline-flexible"
+              label={null}
+              multiline
+              minRows={1}
+              maxRows={5}
+              inputProps={{ maxLength: 200 }}
+              value={sentMessage}
+              onChange={handleInputChange}
+              onKeyPress={handleSendMessage}
+              style={{ margin: window.innerWidth >= 768 ? "0" : "0 5vw" }}
+            />
+          </Html>
+        </>
+      )}
     </>
   );
 };

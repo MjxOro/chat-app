@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import * as THREE from "three";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Scroll, ScrollControls, Torus } from "@react-three/drei";
@@ -20,6 +20,7 @@ const MyTorus = (props: any) => {
 };
 const LandingPage: React.FC = () => {
   const ref = useRef<THREE.Mesh>(null!);
+  //Handlers
   const handleMouse = (e: any) => {
     const pointerX = e.clientX / window.innerWidth - 0.5;
     const pointerY = e.clientY / window.innerHeight - 0.5;
@@ -28,7 +29,9 @@ const LandingPage: React.FC = () => {
       ref.current.rotation.y = pointerX;
     }
   };
-
+  const handleResize = () => {};
+  //Make threejs responsive real time
+  //Make event listener stop when finished using
   useEffect(() => {
     window.addEventListener("mousemove", handleMouse);
     return () => {

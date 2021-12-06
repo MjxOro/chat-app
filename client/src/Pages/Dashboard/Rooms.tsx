@@ -1,16 +1,19 @@
-import React, { useContext, useRef, useState } from "react";
+import { useState } from "react";
 import "./Rooms.scss";
-import useSockets from "../../context/SocketContext";
-import useAuthenticate from "../../context/AuthContext";
 import EVENTS from "../../config/socketEvents";
 import Avatar from "@mui/material/Avatar";
 import TextField from "@mui/material/TextField";
 import { teal } from "@mui/material/colors";
-import Modal from "@mui/material/Modal";
 import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
 
-const Rooms = ({ isAuth: currentUser, socket, rooms, currentRoomId }: any) => {
+const Rooms = ({
+  isAuth: currentUser,
+  socket,
+  rooms,
+  currentRoomId,
+  setShowChat,
+}: any) => {
   const [roomName, setRoomName] = useState<string>("");
   const [showModal, setShowModal] = useState<boolean>(false);
   const handleOpen = () => setShowModal(true);
@@ -34,6 +37,7 @@ const Rooms = ({ isAuth: currentUser, socket, rooms, currentRoomId }: any) => {
     socket.emit(EVENTS.CLIENT.CREATE_ROOM, { roomName, currentUser });
     setRoomName("");
     setShowModal(false);
+    setShowChat(true);
   };
 
   const handleJoinRoom = async (e: any) => {
@@ -42,8 +46,8 @@ const Rooms = ({ isAuth: currentUser, socket, rooms, currentRoomId }: any) => {
       return;
     }
     socket.emit(EVENTS.CLIENT.LEAVE_ROOMS, { currentRoomId });
-    console.log(clickedRoom);
     socket.emit(EVENTS.CLIENT.JOINING_ROOM, { clickedRoom, currentUser });
+    setShowChat(true);
   };
 
   return (
@@ -63,7 +67,7 @@ const Rooms = ({ isAuth: currentUser, socket, rooms, currentRoomId }: any) => {
                 id="standard-multiline-flexible"
                 label="Room Name"
                 multiline
-                maxRows={4}
+                maxRows={1}
                 value={roomName}
                 onChange={handleTextFieldChange}
                 variant="standard"
