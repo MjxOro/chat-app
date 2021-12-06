@@ -6,6 +6,7 @@ import TextField from "@mui/material/TextField";
 import { teal } from "@mui/material/colors";
 import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
+import ArrowBack from "@mui/icons-material/ArrowBackIos";
 
 const Rooms = ({
   isAuth: currentUser,
@@ -63,6 +64,11 @@ const Rooms = ({
               style={{ zIndex: 10000 }}
               onClick={(e) => e.stopPropagation()}
             >
+              <ArrowBack
+                onClick={handleClose}
+                className="modal__back-arrow"
+                style={{ color: teal["A400"] }}
+              />
               <TextField
                 id="standard-multiline-flexible"
                 label="Room Name"

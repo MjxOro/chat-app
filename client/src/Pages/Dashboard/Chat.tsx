@@ -176,10 +176,11 @@ const Chat = ({
                   height: "5vh",
                   alignItems: "center",
                   backgroundColor: "white",
+                  padding: "1rem",
                 }}
               >
                 <ArrowBack
-                  style={{ margin: "0 2rem", color: teal["A400"] }}
+                  style={{ color: teal["A400"] }}
                   onClick={handleShowRooms}
                 />
                 <h1>{currentRoom.title}</h1>
