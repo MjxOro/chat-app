@@ -46,6 +46,7 @@ const Dashboard: React.FC = () => {
           )}
           {(window.innerWidth >= 768 || showChat) && (
             <Chat
+              className="three-chat"
               isAuth={isAuth}
               socket={socket}
               messages={messages}

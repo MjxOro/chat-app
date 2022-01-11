@@ -3,3 +3,14 @@
   display: flex;
   justify-content: center;
 }
+.three-chat{
+  div:last-child{
+    background-color: "black";
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+    &::-webkit-scrollbar{
+      display:none;
+    }
+  }
+
+}
