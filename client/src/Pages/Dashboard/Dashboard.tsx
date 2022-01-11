@@ -22,7 +22,7 @@ const Dashboard: React.FC = () => {
   }, [window.innerWidth]);
   return (
     <>
-      <Canvas>
+      <Canvas className="three-chat">
         <ambientLight />
         <pointLight position={[-1, 0, 0]} />
         <Suspense fallback={null}>
@@ -46,7 +46,6 @@ const Dashboard: React.FC = () => {
           )}
           {(window.innerWidth >= 768 || showChat) && (
             <Chat
-              className="three-chat"
               isAuth={isAuth}
               socket={socket}
               messages={messages}
